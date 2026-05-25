@@ -6,7 +6,7 @@ Static weekly report site for monitoring TP-Link VX231v Amazon.de review signals
 
 Recommended public URL after GitHub Pages is enabled:
 
-https://kevinli2024de.github.io/VX231v-Amazon-Review/
+https://kevinli2024de.github.io/vx231v-Amazon-Review/
 
 Publish source:
 
