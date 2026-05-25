@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VX231v Amazon 评论周报</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #68737d;
+      --line: #d7dde3;
+      --paper: #f6f7f4;
+      --panel: #ffffff;
+      --blue: #1f6f8b;
+      --green: #287a54;
+      --amber: #b66a16;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+
+    a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 34px 24px 48px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: end;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .card, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .value {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 750;
+    }
+
+    .note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .updates {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .update {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .update:last-child { border-bottom: 0; }
+
+    .date {
+      font-weight: 750;
+      color: var(--green);
+    }
+
+    .summary {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .callout {
+      margin-top: 18px;
+      border-left: 4px solid var(--amber);
+      background: #fff8ec;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      color: #594024;
+      font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
+      header, .grid, .update { grid-template-columns: 1fr; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>VX231v Amazon 评论周报</h1>
+        <p class="subtitle">用于公开发布的周报入口页。这里展示最新监控结论、每周归档和可追溯的数据说明。</p>
+      </div>
+      <a class="button" href="vx231v_amazon_review_report.html">查看最新报表</a>
+    </header>
+
+    <section class="grid" aria-label="latest metrics">
+      <article class="card">
+        <p class="label">最新更新时间</p>
+        <p class="value">05-25</p>
+        <p class="note">2026 年，第 1 期公网周报。</p>
+      </article>
+      <article class="card">
+        <p class="label">公开聚合评论数</p>
+        <p class="value">231</p>
+        <p class="note">较 2026-05-20 基线增加 16 条。</p>
+      </article>
+      <article class="card">
+        <p class="label">Amazon 聚合评分</p>
+        <p class="value">4.4</p>
+        <p class="note">评分结构稳定，低星占比约 9%。</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>每周更新</h2>
+      <ul class="updates">
+        <li class="update">
+          <span class="date">2026-05-25</span>
+          <p class="summary">评论聚合口径更新至 231 条，均分保持 4.4；新增“本周变化”和“环比指标”。</p>
+          <a href="reports/2026-05-25.html">查看归档</a>
+        </li>
+      </ul>
+      <div class="callout">公网发布后，每周自动任务应更新最新报表文件，并新增一条归档记录。当前 Amazon 原站逐条评论仍受访问限制，因此周报以可核验公开聚合数据为主。</div>
+    </section>
+  </main>
+</body>
+</html>

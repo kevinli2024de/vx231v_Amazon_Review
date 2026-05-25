@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VX231v Amazon 评论分析报表</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #68737d;
+      --line: #d7dde3;
+      --paper: #f6f7f4;
+      --panel: #ffffff;
+      --blue: #1f6f8b;
+      --green: #287a54;
+      --amber: #b66a16;
+      --red: #b43f45;
+      --violet: #7356a5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+
+    a { color: var(--blue); }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 24px 44px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr);
+      gap: 24px;
+      align-items: end;
+      padding: 26px 0 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .meta {
+      display: grid;
+      gap: 8px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meta strong { color: var(--ink); font-size: 15px; }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 132px;
+    }
+
+    .label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .value {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 750;
+    }
+
+    .note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    section {
+      margin-top: 18px;
+      padding-top: 4px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .summary {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .summary li {
+      padding-left: 14px;
+      border-left: 4px solid var(--blue);
+    }
+
+    .summary li:nth-child(2) { border-color: var(--green); }
+    .summary li:nth-child(3) { border-color: var(--amber); }
+
+    .bars {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr) 82px;
+      gap: 10px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .track {
+      height: 14px;
+      border-radius: 999px;
+      background: #e9edf0;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--green);
+    }
+
+    .bar-row:nth-child(2) .fill { background: var(--blue); }
+    .bar-row:nth-child(3) .fill { background: var(--violet); }
+    .bar-row:nth-child(4) .fill { background: var(--amber); }
+    .bar-row:nth-child(5) .fill { background: var(--red); }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .theme {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 150px;
+      background: #fbfcfc;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--blue);
+    }
+
+    .tag.good { background: var(--green); }
+    .tag.warn { background: var(--amber); }
+    .tag.risk { background: var(--red); }
+    .tag.info { background: var(--violet); }
+
+    .theme p, .panel p { margin: 0; }
+
+    .actions {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .actions th,
+    .actions td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .actions th {
+      color: var(--muted);
+      font-weight: 700;
+      background: #f0f3f5;
+    }
+
+    .pill {
+      display: inline-block;
+      min-width: 72px;
+      text-align: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--blue);
+    }
+
+    .pill.high { background: var(--red); }
+    .pill.mid { background: var(--amber); }
+    .pill.low { background: var(--green); }
+
+    .sources {
+      display: grid;
+      gap: 10px;
+      padding-left: 18px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--amber);
+      background: #fff8ec;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      color: #594024;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      header, .grid, .theme-grid { grid-template-columns: 1fr; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      .page { padding: 18px 14px 32px; }
+      .kpis { grid-template-columns: 1fr; }
+      .bar-row { grid-template-columns: 44px minmax(0, 1fr) 72px; }
+      .actions { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>VX231v Amazon 评论分析报表</h1>
+        <p class="subtitle">基于 2026-05-25 可访问公开数据，对 TP-Link VX231v 在 Amazon.de 的评分结构、用户主题和风险信号进行整理。核心判断：口碑总体健康，公开聚合评论数较 5 月 20 日基线增加，但差评仍集中在易用性、WLAN 接收体验和功能预期错配。</p>
+      </div>
+      <aside class="meta" aria-label="report metadata">
+        <strong>监控对象：TP-Link VX231v</strong>
+        <span>渠道：Amazon.de 商品与评论聚合信息</span>
+        <span>ASIN：B0BWYZVJCV</span>
+        <span>生成时间：2026-05-25</span>
+      </aside>
+    </header>
+
+    <section class="kpis" aria-label="key metrics">
+      <article class="kpi">
+        <p class="label">Amazon 评论均分</p>
+        <p class="value">4.4</p>
+        <p class="note">满分 5 星，来自 Testberichte 聚合的 Amazon.de 意见。</p>
+      </article>
+      <article class="kpi">
+        <p class="label">评论总量</p>
+        <p class="value">231</p>
+        <p class="note">较 2026-05-20 基线增加 16 条。</p>
+      </article>
+      <article class="kpi">
+        <p class="label">正向评价占比</p>
+        <p class="value">87%</p>
+        <p class="note">5 星 + 4 星合计 202 条。</p>
+      </article>
+      <article class="kpi">
+        <p class="label">低星风险占比</p>
+        <p class="value">9%</p>
+        <p class="note">1 星 + 2 星合计 20 条。</p>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <h2>本期摘要</h2>
+        <ul class="summary">
+          <li>VX231v 当前 Amazon 口碑偏强，4.4/5 的评分和 87% 的 4-5 星占比说明多数用户认可“价格、基础性能、安装便利”的组合。</li>
+          <li>本次更新的公开聚合口径为 231 条意见，较 5 月 20 日记录的 215 条增加 16 条；均分保持 4.4，正向占比稳定，低星占比从约 10% 降至约 9%。</li>
+          <li>好评主要围绕 Wi-Fi 6、稳定连接、DSL 调制解调器集成、EasyMesh、紧凑外观和性价比展开，适合“替换旧 DSL 路由器”的主流家庭场景。</li>
+          <li>风险集中在“操作界面/配置不直观”“WLAN 接收或覆盖不稳定”“4G Backup、VPN、Access Point、2.5G LAN 等功能预期”上，需要通过页面说明、FAQ 和售后脚本提前降噪。</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <h2>评分分布</h2>
+        <div class="bars" aria-label="rating distribution">
+          <div class="bar-row"><span>5 星</span><div class="track"><div class="fill" style="width:71%"></div></div><strong>165 / 71%</strong></div>
+          <div class="bar-row"><span>4 星</span><div class="track"><div class="fill" style="width:16%"></div></div><strong>37 / 16%</strong></div>
+          <div class="bar-row"><span>3 星</span><div class="track"><div class="fill" style="width:4%"></div></div><strong>9 / 4%</strong></div>
+          <div class="bar-row"><span>2 星</span><div class="track"><div class="fill" style="width:4%"></div></div><strong>9 / 4%</strong></div>
+          <div class="bar-row"><span>1 星</span><div class="track"><div class="fill" style="width:5%"></div></div><strong>11 / 5%</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>评论主题洞察</h2>
+      <div class="theme-grid">
+        <article class="theme">
+          <span class="tag good">正面主题</span>
+          <h3>速度与稳定性</h3>
+          <p>用户整体认可 Wi-Fi 6、VDSL2 35b 和稳定连接，尤其是旧设备升级场景。公开聚合分析提到，速度和远距离稳定连接是正面评价的核心。</p>
+        </article>
+        <article class="theme">
+          <span class="tag good">正面主题</span>
+          <h3>性价比与基础功能</h3>
+          <p>价格被视为强卖点。集成 DSL Modem、电话功能、EasyMesh、USB 和千兆端口，形成“够用且便宜”的购买理由。</p>
+        </article>
+        <article class="theme">
+          <span class="tag warn">负面主题</span>
+          <h3>配置与界面门槛</h3>
+          <p>负面评价里反复出现“操作不习惯、不够直观”的信号。对于从 Fritz!Box 或运营商设备迁移的用户，首次设置路径和术语可能造成摩擦。</p>
+        </article>
+        <article class="theme">
+          <span class="tag risk">负面主题</span>
+          <h3>WLAN 覆盖与预期落差</h3>
+          <p>少数用户反馈 WLAN 接收或信号表现不达预期。该问题会直接影响低星评价，需要在页面里明确房屋结构、客户端能力和 Mesh 扩展建议。</p>
+        </article>
+        <article class="theme">
+          <span class="tag info">功能预期</span>
+          <h3>高级功能缺口</h3>
+          <p>用户可能期待 4G Backup、VPN、Access Point、2.5G LAN、Wi-Fi 6E 或更强安全选项。部分功能存在、部分缺失或受条件限制，页面表述需要更精确。</p>
+        </article>
+        <article class="theme">
+          <span class="tag info">外部评测</span>
+          <h3>专业评测背书</h3>
+          <p>connect 给出“gut”，强调接口、移动网络 fallback、文件共享和电话功能；CHIP 认为它价格友好、功耗低、易设置，但 WLAN 性能和安全功能不是强项。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>风险预警与行动建议</h2>
+      <table class="actions">
+        <thead>
+          <tr>
+            <th>优先级</th>
+            <th>风险/机会</th>
+            <th>建议动作</th>
+            <th>预期效果</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill high">高</span></td>
+            <td>兼容性与功能预期错配：德国限定、支持 Telekom/O2/1&1、不支持 Vodafone MIC 等信息容易被忽略。</td>
+            <td>在 Amazon 标题、首屏 A+、FAQ 和图片文案中突出运营商兼容性边界，并加入“购买前确认清单”。</td>
+            <td>减少误购、退货和 1 星评价。</td>
+          </tr>
+          <tr>
+            <td><span class="pill high">高</span></td>
+            <td>配置不直观导致低星或客服压力。</td>
+            <td>制作 3 分钟设置视频、截图式快速指南、常见 ISP 参数模板，并在售后自动回复中提供直达链接。</td>
+            <td>降低首次安装失败率，提高新用户体验。</td>
+          </tr>
+          <tr>
+            <td><span class="pill mid">中</span></td>
+            <td>WLAN 覆盖被少数用户认为不稳定。</td>
+            <td>增加“摆放位置、墙体影响、Mesh 扩展、5GHz/2.4GHz 切换”的排障 FAQ；客服优先引导固件升级和信道检查。</td>
+            <td>把体验问题转化为可解决问题，减少差评升级。</td>
+          </tr>
+          <tr>
+            <td><span class="pill mid">中</span></td>
+            <td>与高端路由器相比，1G 端口、USB 2.0、无 Wi-Fi 6E 等规格容易形成落差。</td>
+            <td>页面定位改为“DSL 家庭升级/高性价比 Wi-Fi 6”，避免暗示旗舰性能；对比表明确 VX231v 与 VX800v/更高端型号差异。</td>
+            <td>吸引匹配用户，减少高性能用户误购。</td>
+          </tr>
+          <tr>
+            <td><span class="pill low">低</span></td>
+            <td>当前总体评分健康，正面资产尚未充分利用。</td>
+            <td>把“低功耗、简单设置、电话功能、EasyMesh、价格”做成评论关键词模块和卖点短句。</td>
+            <td>强化转化理由，提升详情页说服力。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <h2>本周变化</h2>
+        <p>截至 2026-05-25，可访问的 Testberichte 聚合口径显示 Amazon.de 相关意见为 231 条，较 2026-05-20 报表基线的 215 条增加 16 条。评分仍为 4.4 星，5 星和 4 星合计 202 条，低星 1-2 星合计 20 条。结论是：口碑规模扩大但评分结构没有恶化，当前不需要升级为声誉风险事件；建议继续优先处理安装指导、运营商兼容说明和 WLAN 覆盖预期管理。</p>
+      </article>
+      <article class="panel">
+        <h2>环比指标</h2>
+        <div class="bars" aria-label="weekly changes">
+          <div class="bar-row"><span>总量</span><div class="track"><div class="fill" style="width:100%"></div></div><strong>+16</strong></div>
+          <div class="bar-row"><span>5 星</span><div class="track"><div class="fill" style="width:81%"></div></div><strong>+13</strong></div>
+          <div class="bar-row"><span>4 星</span><div class="track"><div class="fill" style="width:19%"></div></div><strong>+3</strong></div>
+          <div class="bar-row"><span>低星</span><div class="track"><div class="fill" style="width:0%"></div></div><strong>-1</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <h2>监控基线</h2>
+        <p>后续每周监控建议记录这些指标：总评论数、均分、星级分布、新增 1-2 星评论数量、关键词频次、运营商兼容投诉、WLAN/设置/固件相关投诉、价格变化。当前最新基线为 231 条评论、4.4 星、低星占比 9%。上一版 2026-05-20 基线为 215 条评论、4.4 星、低星占比 10%。</p>
+      </article>
+      <article class="panel">
+        <h2>数据限制</h2>
+        <div class="callout">当前环境未能直接抓取 Amazon.de 评论明细页，因此本期没有逐条评论原文、评论日期和已验证购买标记。报表使用 Testberichte 对 Amazon.de 评论的公开聚合、商品页公开信息及专业评测信息交叉判断；“本周变化”代表公开聚合口径变化，不等同于 Amazon 原站逐条新增评论。后续若能接入可授权爬取、Amazon API 或人工导出的评论 CSV，可补充新增评论明细、评论日期和精确趋势环比。</div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>数据来源</h2>
+      <ul class="sources">
+        <li><a href="https://www.testberichte.de/p/tp-link-tests/vx231v-testbericht.html">Testberichte.de - TP-Link VX231v Test 与 Amazon.de 评论聚合</a>：231 条 Amazon.de 意见、4.4 星、星级分布及用户主题摘要；页面抓取时间为 2026-05-24/25 附近。</li>
+        <li><a href="https://www.connect.de/testbericht/tp-link-vx231v-test-3208160.html">connect - TP-Link VX231v im Test</a>：专业评测结论、优点和缺点。</li>
+        <li><a href="https://www.chip.de/test/TP-Link-Internet-Box-4-VX231v-im-Test_186028276.html">CHIP - TP-Link Internet Box 4 VX231v im Test</a>：性能、功耗、功能和限制项评测。</li>
+        <li><a href="https://www.amazon.de/-/en/TP-Link-VX231v-Dual-Band-Supports-Vodafone/dp/B0BWYZVJCV">Amazon.de 商品页</a>：监控对象原始商品链接。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
